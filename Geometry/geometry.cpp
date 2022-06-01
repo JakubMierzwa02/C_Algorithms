@@ -1,4 +1,7 @@
 #include <iostream>
+#include <cmath>
+
+const float EPS = 0.0001;
 
 struct Point
 {
@@ -19,6 +22,22 @@ void loadPoint(std::string info, Point &p)
 bool pointOnTheSameSide(float a, float b, float c, Point p1, Point p2)
 {
     return ((a * p1.x + b * p1.y + c) * (a * p2.x + b * p2.y + c) > 0);
+}
+
+// A function that calculates the determinant of a matrix
+float det(float x1, float y1, float x2, float y2, float x3, float y3)
+{
+    return (y3 - y1) * (x2 - x1) - (y2 - y1) * (x3 - x1);
+}
+
+// A function that checks whether the point P belongs to the segment AB
+bool pointInTheSegment(Point A, Point B, Point P)
+{
+    float w = det(A.x, A.y, B.x, B.y, P.x, P.y);
+    if (std::abs(w) > EPS)
+        return false;
+
+    return (P.x >= std::min(A.x, B.x) && P.x <= std::max(A.x, B.x) && P.y >= std::min(A.y, B.y) && P.y <= std::max(A.y, B.y));
 }
 
 int main()
@@ -45,6 +64,18 @@ int main()
         std::cout << "The points are on the same side of the straight line. \n";
     else
         std::cout << "The points are not on the same side of the straight line. \n";
+
+    // Affiliation of a point to a segment
+    Point A, B, P;
+
+    loadPoint("Enter the coordinates of the point A. ", A);
+    loadPoint("Enter the coordinates of the point B. ", B);
+    loadPoint("Enter the coordinates of the point P. ", P);
+
+    if (pointInTheSegment(A, B, P))
+        std::cout << "Point P belongs to the segment AB. \n";
+    else
+        std::cout << "Point P does not belong to the segment AB. \n";
 
     return 0;
 }
